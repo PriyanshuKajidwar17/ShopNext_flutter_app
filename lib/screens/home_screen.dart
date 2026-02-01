@@ -83,26 +83,49 @@ class _HomeScreenState extends State<HomeScreen> {
           // 🔽 LOAD MORE SECTION
           Consumer<ProductProvider>(
             builder: (context, provider, _) {
-              return provider.isLoading
-                  ? const Padding(
-                padding: EdgeInsets.all(12),
-                child: CircularProgressIndicator(),
-              )
-                  : Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
-                    foregroundColor: Colors.white,
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
+                    child: OutlinedButton(
+                      key: ValueKey(provider.isLoading),
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: Colors.transparent, // fully transparent
+                        foregroundColor: Colors.black,
+                        side: BorderSide(
+                          color: Colors.black.withOpacity(0.25),
+                          width: 1.4,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      onPressed: provider.isLoading
+                          ? null
+                          : () {
+                        provider.loadMore();
+                      },
+                      child: Text(
+                        provider.isLoading ? "Loading…" : "Reveal More",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.6,
+                        ),
+                      ),
+                    ),
                   ),
-                  onPressed: () {
-                    provider.loadMore();
-                  },
-                  child: const Text("Load More"),
                 ),
               );
             },
           ),
+
         ],
       ),
     );
