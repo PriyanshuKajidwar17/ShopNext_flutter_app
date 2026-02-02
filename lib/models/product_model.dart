@@ -15,8 +15,8 @@ class Product {
     return Product(
       id: json['id'],
       title: json['title'],
-      price: json['price'].toDouble(),
-      image: json['image'],
+      price: (json['price'] as num).toDouble(),
+      image: json['thumbnail'], // DummyJSON image field
     );
   }
 }
