@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 
 import '../models/product_model.dart';
 import '../providers/cart_provider.dart';
-import 'buy_now_screen.dart';
+import '../providers/checkout_provider.dart';
+import 'address_form_sheet.dart';
+import 'address_confirm_screen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
@@ -59,13 +61,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   },
                 ),
 
-                // ◀ ▶ ARROWS
-                Positioned(
+                // ◀ ▶ ARROWS (visual only)
+                const Positioned(
                   left: 8,
                   top: 120,
                   child: Icon(Icons.arrow_back_ios),
                 ),
-                Positioned(
+                const Positioned(
                   right: 8,
                   top: 120,
                   child: Icon(Icons.arrow_forward_ios),
@@ -113,10 +115,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   // ⭐ RATING
                   Row(
                     children: [
-                      const Icon(Icons.star, color: Colors.amber, size: 20),
+                      const Icon(Icons.star,
+                          color: Colors.amber, size: 20),
                       Text(
                         "${product.rating} / 5",
-                        style: const TextStyle(fontWeight: FontWeight.w600),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(width: 6),
                       const Text("(Reviews available)"),
@@ -153,7 +157,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                   const Spacer(),
 
-                  // 🛒 BUTTONS
+                  // 🛒 ACTION BUTTONS
                   Row(
                     children: [
                       Expanded(
@@ -165,7 +169,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("Product added to cart"),
+                                content:
+                                Text("Product added to cart"),
                               ),
                             );
                           },
@@ -173,15 +178,44 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       ),
                       const SizedBox(width: 12),
+
+                      // ✅ BUY NOW (FINAL LOGIC)
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const BuyNowScreen(),
-                              ),
+                            final checkout =
+                            context.read<CheckoutProvider>();
+
+                            // set single product order
+                            checkout.setOrder(
+                              [product],
+                              product.price,
                             );
+
+                            // address reuse logic
+                            if (checkout.hasAddress) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                  const AddressConfirmScreen(),
+                                ),
+                              );
+                            } else {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                shape:
+                                const RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.vertical(
+                                    top: Radius.circular(16),
+                                  ),
+                                ),
+                                builder: (_) =>
+                                const AddressFormSheet(),
+                              );
+                            }
                           },
                           child: const Text("Buy Now"),
                         ),
