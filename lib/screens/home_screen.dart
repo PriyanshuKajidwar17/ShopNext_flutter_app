@@ -40,13 +40,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
 
-      // ✅ PURPLE NAVIGATION LIKE IMAGE
+      // 🟣 APP BAR
       appBar: AppBar(
         backgroundColor: const Color(0xFF6A3CBC),
         elevation: 0,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(15), // 👈 upward curved corners
+            bottom: Radius.circular(15),
           ),
         ),
         title: const Text(
@@ -107,11 +107,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
-
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 🔍 SEARCH BAR
+          // 🔍 REAL SEARCH BAR
           Padding(
             padding: const EdgeInsets.all(16),
             child: Container(
@@ -121,20 +120,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Row(
-                children: [
-                  Icon(Icons.search, size: 20, color: Colors.grey),
-                  SizedBox(width: 10),
-                  Text(
-                    "Search products",
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ],
+              child: TextField(
+                onChanged: (value) {
+                  context.read<ProductProvider>().search(value);
+                },
+                decoration: const InputDecoration(
+                  hintText: "Search products",
+                  prefixIcon: Icon(Icons.search, size: 20),
+                  border: InputBorder.none,
+                ),
               ),
             ),
           ),
 
-          // 🏷️ CATEGORY PILLS
+          // 🏷️ CATEGORY PILLS (UI ONLY FOR NOW)
           SizedBox(
             height: 42,
             child: ListView.separated(
@@ -179,9 +178,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
           const SizedBox(height: 16),
 
-          // 🛍️ PRODUCTS GRID
+          // 🛍️ PRODUCTS GRID (AUTO FILTERED)
           Expanded(
-            child: GridView.builder(
+            child: products.isEmpty
+                ? const Center(child: Text("No products found"))
+                : GridView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               gridDelegate:
               const SliverGridDelegateWithFixedCrossAxisCount(
@@ -197,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          // 🔽 REVEAL MORE BUTTON (LIKE IMAGE)
+          // 🔽 LOAD MORE
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
             child: SizedBox(
