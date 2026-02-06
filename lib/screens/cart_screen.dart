@@ -15,56 +15,90 @@ class CartScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text("My Cart")),
-      body: cart.cartItems.isEmpty
+      body: cart.items.isEmpty
           ? const Center(child: Text("Your cart is empty"))
           : Column(
         children: [
+          // 🛒 CART ITEMS LIST
           Expanded(
             child: ListView.builder(
-              itemCount: cart.cartItems.length,
+              itemCount: cart.items.length,
               itemBuilder: (_, i) {
-                final product = cart.cartItems[i];
-                return ListTile(
-                  leading: Image.network(
-                    product.images.isNotEmpty
-                        ? product.images.first
-                        : '',
-                    width: 50,
-                    errorBuilder: (_, __, ___) =>
-                    const Icon(Icons.broken_image),
-                  ),
-                  title: Text(product.title),
-                  subtitle: Text("\$${product.price}"),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => cart.removeFromCart(product),
+                final cartItem = cart.items[i];
+                final product = cartItem.product;
+
+                return Card(
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 6),
+                  child: ListTile(
+                    leading: Image.network(
+                      product.images.isNotEmpty
+                          ? product.images.first
+                          : '',
+                      width: 50,
+                      errorBuilder: (_, __, ___) =>
+                      const Icon(Icons.broken_image),
+                    ),
+                    title: Text(product.title),
+                    subtitle: Text(
+                      "₹${product.price} × ${cartItem.quantity} = "
+                          "₹${cartItem.totalPrice.toStringAsFixed(2)}",
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.remove),
+                          onPressed: () =>
+                              cart.decreaseQty(product),
+                        ),
+                        Text(
+                          cartItem.quantity.toString(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: () =>
+                              cart.increaseQty(product),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
             ),
           ),
 
+          // 💰 TOTAL & CHECKOUT SECTION
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.grey.shade200,
-              borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(16)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
             ),
             child: Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
                       "Total",
                       style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
-                      "\$${cart.totalPrice.toStringAsFixed(2)}",
+                      "₹${cart.totalPrice.toStringAsFixed(2)}",
                       style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -80,8 +114,9 @@ class CartScreen extends StatelessWidget {
                     final checkout =
                     context.read<CheckoutProvider>();
 
+                    // ✅ PASS CART ITEMS WITH QUANTITY
                     checkout.setOrder(
-                      cart.cartItems,
+                      cart.items,
                       cart.totalPrice,
                     );
 
@@ -102,7 +137,8 @@ class CartScreen extends StatelessWidget {
                       );
                     }
                   },
-                  child: const Text("Proceed to Checkout"),
+                  child:
+                  const Text("Proceed to Checkout"),
                 ),
               ],
             ),

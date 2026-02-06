@@ -21,9 +21,15 @@ class OrderHistoryScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final order = orders[index];
 
+          // ✅ TOTAL ITEM COUNT (WITH QUANTITY)
+          final totalItems = order.items.fold<int>(
+            0,
+                (sum, item) => sum + item.quantity,
+          );
+
           return Card(
-            margin:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            margin: const EdgeInsets.symmetric(
+                horizontal: 12, vertical: 8),
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
@@ -32,7 +38,8 @@ class OrderHistoryScreen extends StatelessWidget {
                   Text(
                     "Order #${order.id}",
                     style: const TextStyle(
-                        fontWeight: FontWeight.bold),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -40,13 +47,12 @@ class OrderHistoryScreen extends StatelessWidget {
                     style: const TextStyle(fontSize: 12),
                   ),
                   const SizedBox(height: 6),
+                  Text("Items: $totalItems"),
                   Text(
-                    "Items: ${order.products.length}",
-                  ),
-                  Text(
-                    "Total: ₹${order.totalAmount}",
+                    "Total: ₹${order.totalAmount.toStringAsFixed(2)}",
                     style: const TextStyle(
-                        fontWeight: FontWeight.w600),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               ),

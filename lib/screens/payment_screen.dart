@@ -29,9 +29,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
             child: ListTile(
               title: const Text("Total Amount"),
               trailing: Text(
-                "₹${checkout.totalAmount}",
-                style:
-                const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                "₹${checkout.totalAmount.toStringAsFixed(2)}",
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -50,7 +52,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 minimumSize: const Size(double.infinity, 50),
               ),
               onPressed: () => _confirmPayment(context),
-              child: Text("Pay ₹${checkout.totalAmount}"),
+              child: Text("Pay ₹${checkout.totalAmount.toStringAsFixed(2)}"),
             ),
           ),
         ],
@@ -85,15 +87,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
               final orders = context.read<OrderProvider>();
               final cart = context.read<CartProvider>();
 
+              // ✅ SAVE ORDER WITH QUANTITY
               orders.addOrder(
-                products: checkout.products,
+                items: checkout.items,
                 total: checkout.totalAmount,
                 address: checkout.address!,
               );
 
+              // ✅ CLEAR STATES SAFELY
               cart.clearCart();
-              checkout.products = [];
-              checkout.totalAmount = 0;
+              checkout.clearOrder();
 
               Navigator.pop(context);
 

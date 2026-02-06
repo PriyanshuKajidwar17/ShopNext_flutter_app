@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import '../models/product_model.dart';
+import '../models/cart_item_model.dart';
 
 class CheckoutProvider extends ChangeNotifier {
   Map<String, String>? address;
-  List<Product> products = [];
+
+  // ✅ Stores cart items WITH quantity
+  List<CartItem> items = [];
   double totalAmount = 0;
 
-  // ✅ this flag controls everything
+  // Controls address flow
   bool get hasAddress => address != null;
 
   void setAddress(Map<String, String> data) {
@@ -14,15 +16,16 @@ class CheckoutProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setOrder(List<Product> items, double total) {
-    products = items;
+  // ✅ Set order data from cart
+  void setOrder(List<CartItem> cartItems, double total) {
+    items = List.from(cartItems);
     totalAmount = total;
     notifyListeners();
   }
 
-  // ❌ DO NOT clear address here
+  // ❌ Do NOT clear address (better UX)
   void clearOrder() {
-    products = [];
+    items = [];
     totalAmount = 0;
     notifyListeners();
   }

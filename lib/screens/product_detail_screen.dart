@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/product_model.dart';
+import '../models/cart_item_model.dart';
 import '../providers/cart_provider.dart';
 import '../providers/checkout_provider.dart';
 import 'address_form_sheet.dart';
@@ -28,7 +29,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F7F7),
 
-      //  CURVED APP BAR WITH CART
+      // 🟣 APP BAR
       appBar: AppBar(
         backgroundColor: const Color(0xFF6A3CBC),
         elevation: 0,
@@ -119,7 +120,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   },
                 ),
 
-                // 🔵 DOT INDICATOR
+                // 🔵 DOTS
                 Positioned(
                   bottom: 12,
                   child: Row(
@@ -127,8 +128,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       product.images.length,
                           (index) => AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        margin:
-                        const EdgeInsets.symmetric(horizontal: 4),
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
                         width: currentIndex == index ? 14 : 8,
                         height: 8,
                         decoration: BoxDecoration(
@@ -145,7 +145,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
           ),
 
-          // 📄 DETAILS
+          // 📄 PRODUCT DETAILS
           Expanded(
             child: Container(
               padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
@@ -165,7 +165,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   const SizedBox(height: 10),
 
                   Row(
@@ -202,7 +201,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   const SizedBox(height: 14),
 
                   Text(
-                    "\$${product.price}",
+                    "₹${product.price}",
                     style: const TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
@@ -236,7 +235,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         ],
       ),
 
-      // 🛒 STICKY BOTTOM BAR
+      // 🛒 BOTTOM ACTION BAR
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -275,7 +274,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF6A3CBC),
-                  foregroundColor: Colors.white, // ⭐ IMPORTANT FIX
+                  foregroundColor: Colors.white,
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
@@ -285,8 +284,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   final checkout =
                   context.read<CheckoutProvider>();
 
+                  // ✅ BUY NOW → CREATE CART ITEM
                   checkout.setOrder(
-                    [product],
+                    [
+                      CartItem(product: product, quantity: 1),
+                    ],
                     product.price,
                   );
 

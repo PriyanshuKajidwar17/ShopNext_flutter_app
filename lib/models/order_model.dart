@@ -1,16 +1,16 @@
-import 'product_model.dart';
+import 'cart_item_model.dart';
 
 class Order {
   final String id;
   final DateTime date;
-  final List<Product> products;
+  final List<CartItem> items; // ✅ quantity preserved
   final double totalAmount;
   final Map<String, String> address;
 
   Order({
     required this.id,
     required this.date,
-    required this.products,
+    required this.items,
     required this.totalAmount,
     required this.address,
   });
