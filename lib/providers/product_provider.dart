@@ -9,18 +9,18 @@ class ProductProvider extends ChangeNotifier {
   int _limit = 12;
   bool _isLoading = false;
 
+  String _searchQuery = "";
+  String _selectedCategory = "All";
+
   List<Product> get products => _filteredProducts;
   bool get isLoading => _isLoading;
-
-  // 🔍 SEARCH QUERY
-  String _searchQuery = "";
 
   Future<void> loadInitialProducts() async {
     _isLoading = true;
     notifyListeners();
 
     _allProducts = await ApiService.fetchProducts(_limit);
-    _applySearch();
+    _applyFilters();
 
     _isLoading = false;
     notifyListeners();
@@ -34,27 +34,40 @@ class ProductProvider extends ChangeNotifier {
 
     _limit += 6;
     _allProducts = await ApiService.fetchProducts(_limit);
-    _applySearch();
+    _applyFilters();
 
     _isLoading = false;
     notifyListeners();
   }
 
-  // 🔍 UPDATE SEARCH
+  // 🔍 SEARCH
   void search(String query) {
     _searchQuery = query.toLowerCase();
-    _applySearch();
+    _applyFilters();
     notifyListeners();
   }
 
-  void _applySearch() {
-    if (_searchQuery.isEmpty) {
-      _filteredProducts = List.from(_allProducts);
-    } else {
-      _filteredProducts = _allProducts
-          .where((product) =>
-          product.title.toLowerCase().contains(_searchQuery))
-          .toList();
-    }
+  // 🏷️ CATEGORY
+  void setCategory(String category) {
+    _selectedCategory = category;
+    _applyFilters();
+    notifyListeners();
+  }
+
+  // 🔄 COMBINED FILTER LOGIC
+  void _applyFilters() {
+    _filteredProducts = _allProducts.where((product) {
+      final matchesSearch = product.title
+          .toLowerCase()
+          .contains(_searchQuery);
+
+      final matchesCategory =
+          _selectedCategory == "All" ||
+              product.category
+                  .toLowerCase()
+                  .contains(_selectedCategory.toLowerCase());
+
+      return matchesSearch && matchesCategory;
+    }).toList();
   }
 }

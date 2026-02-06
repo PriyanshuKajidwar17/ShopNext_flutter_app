@@ -30,6 +30,7 @@ class CartProvider extends ChangeNotifier {
               description: '',
               rating: 0,
               images: List<String>.from(e['images']),
+              category: e['category'], // ✅ FIX
             ),
             quantity: e['quantity'],
           ),
@@ -43,20 +44,20 @@ class CartProvider extends ChangeNotifier {
   void _saveCart() {
     _box.put(
       'items',
-      _items
-          .map(
-            (e) => {
+      _items.map((e) {
+        return {
           'id': e.product.id,
           'title': e.product.title,
           'price': e.product.price,
           'images': e.product.images,
+          'category': e.product.category, // ✅ SAVE CATEGORY
           'quantity': e.quantity,
-        },
-      )
-          .toList(),
+        };
+      }).toList(),
     );
   }
 
+  // ➕ ADD TO CART
   void addToCart(Product product) {
     final index =
     _items.indexWhere((item) => item.product.id == product.id);
@@ -66,10 +67,12 @@ class CartProvider extends ChangeNotifier {
     } else {
       _items.add(CartItem(product: product));
     }
+
     _saveCart();
     notifyListeners();
   }
 
+  // ➕ INCREASE QTY
   void increaseQty(Product product) {
     final index =
     _items.indexWhere((item) => item.product.id == product.id);
@@ -80,6 +83,7 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
+  // ➖ DECREASE QTY
   void decreaseQty(Product product) {
     final index =
     _items.indexWhere((item) => item.product.id == product.id);
@@ -95,6 +99,7 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
+  // 🧹 CLEAR CART
   void clearCart() {
     _items.clear();
     _box.delete('items');

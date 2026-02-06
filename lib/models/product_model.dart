@@ -5,6 +5,7 @@ class Product {
   final String description;
   final double rating;
   final List<String> images;
+  final String category; // ✅ REQUIRED FOR CATEGORY FILTER
 
   Product({
     required this.id,
@@ -13,6 +14,7 @@ class Product {
     required this.description,
     required this.rating,
     required this.images,
+    required this.category,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class Product {
       description: json['description'],
       rating: (json['rating'] as num).toDouble(),
       images: List<String>.from(json['images']),
+      category: json['category'], // ✅ FROM API
     );
   }
 }

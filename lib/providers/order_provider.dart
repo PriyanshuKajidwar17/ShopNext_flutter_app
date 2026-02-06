@@ -12,7 +12,7 @@ class OrderProvider extends ChangeNotifier {
 
   List<Order> get orders => _orders.reversed.toList();
 
-  // ✅ LOAD ORDERS FROM HIVE (ON APP START)
+  // ✅ LOAD ORDERS FROM HIVE
   void loadOrders() {
     final data = _box.get('orders');
 
@@ -35,6 +35,7 @@ class OrderProvider extends ChangeNotifier {
                   description: '',
                   rating: 0,
                   images: List<String>.from(i['images']),
+                  category: i['category'], // ✅ FIX
                 ),
                 quantity: i['quantity'],
               );
@@ -66,7 +67,7 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ✅ SAVE ORDERS AS MAP (IMPORTANT)
+  // ✅ SAVE ORDERS (WITH CATEGORY)
   void _saveOrders() {
     _box.put(
       'orders',
@@ -82,6 +83,7 @@ class OrderProvider extends ChangeNotifier {
               'title': i.product.title,
               'price': i.product.price,
               'images': i.product.images,
+              'category': i.product.category, // ✅ SAVE CATEGORY
               'quantity': i.quantity,
             };
           }).toList(),

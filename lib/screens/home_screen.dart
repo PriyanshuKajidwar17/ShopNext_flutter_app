@@ -7,6 +7,7 @@ import '../widgets/product_card.dart';
 import 'cart_screen.dart';
 import 'order_history_screen.dart';
 
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -146,6 +147,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 return GestureDetector(
                   onTap: () {
                     setState(() => selectedCategory = index);
+                    context
+                        .read<ProductProvider>()
+                        .setCategory(categories[index]);
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
