@@ -41,7 +41,8 @@ class OrderHistoryScreen extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment:
+                  CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Order #${order.id}",
@@ -51,7 +52,8 @@ class OrderHistoryScreen extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       "Date: ${order.date.toLocal()}",
-                      style: const TextStyle(fontSize: 12),
+                      style:
+                      const TextStyle(fontSize: 12),
                     ),
                     const SizedBox(height: 6),
                     Text("Items: $totalItems"),

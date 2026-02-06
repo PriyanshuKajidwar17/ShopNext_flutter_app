@@ -74,14 +74,15 @@ class ProductCard extends StatelessWidget {
               ),
             ),
 
-            // 💲 PRICE + CART BUTTON
+            // ₹ PRICE + CART BUTTON
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "\$${product.price}",
+                    "₹${product.price}", // Text("₹${product.price}")
+
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,

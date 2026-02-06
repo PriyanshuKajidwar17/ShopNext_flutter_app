@@ -11,10 +11,9 @@ import 'screens/home_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ✅ INIT HIVE
   await Hive.initFlutter();
 
-  // ✅ OPEN BOXES
+  // ✅ OPEN REQUIRED BOXES ONLY
   await Hive.openBox('cartBox');
   await Hive.openBox('addressBox');
   await Hive.openBox('orderBox');
@@ -31,8 +30,10 @@ class ShopNext extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ProductProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()..loadCart()),
-        ChangeNotifierProvider(create: (_) => CheckoutProvider()..loadAddress()),
-        ChangeNotifierProvider(create: (_) => OrderProvider()..loadOrders()),
+        ChangeNotifierProvider(
+            create: (_) => CheckoutProvider()..loadAddress()),
+        ChangeNotifierProvider(
+            create: (_) => OrderProvider()..loadOrders()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -44,7 +45,7 @@ class ShopNext extends StatelessWidget {
             foregroundColor: Colors.white,
           ),
         ),
-        home: const HomeScreen(),
+        home: const HomeScreen(), // ✅ DIRECT HOME
       ),
     );
   }
