@@ -7,7 +7,6 @@ import '../widgets/product_card.dart';
 import 'cart_screen.dart';
 import 'order_history_screen.dart';
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -15,7 +14,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   final categories = [
     "All",
     "Mobiles",
@@ -26,10 +26,33 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int selectedCategory = 0;
 
+  late AnimationController _bikeController;
+  late Animation<double> _bikeAnimation;
+
   @override
   void initState() {
     super.initState();
+
     context.read<ProductProvider>().loadInitialProducts();
+
+    // 🚴 Bike animation ONLY for icon
+    _bikeController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+
+    _bikeAnimation = Tween<double>(begin: -6, end: 6).animate(
+      CurvedAnimation(
+        parent: _bikeController,
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _bikeController.dispose();
+    super.dispose();
   }
 
   @override
@@ -50,14 +73,49 @@ class _HomeScreenState extends State<HomeScreen> {
             bottom: Radius.circular(15),
           ),
         ),
-        title: const Text(
-          "ShopNext",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
+
+        /// 🟣 FIXED TEXT + MOVING BIKE ICON
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "ShopNext",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(width: 6),
+
+            /// 🚴 ONLY THIS MOVES
+            AnimatedBuilder(
+              animation: _bikeAnimation,
+              builder: (context, child) {
+                return Transform.translate(
+                  offset: Offset(_bikeAnimation.value, 0),
+                  child: child,
+                );
+              },
+              child: Row(
+                children: const [
+                  Icon(
+                    Icons.directions_bike,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  SizedBox(width: 3),
+                  Icon(
+                    Icons.shopping_bag,
+                    color: Colors.white,
+                    size: 14,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
+
         actions: [
           IconButton(
             icon: const Icon(Icons.receipt_long, color: Colors.white),
@@ -108,10 +166,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
+      // 🧱 BODY
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 🔍 REAL SEARCH BAR
+          // 🔍 SEARCH BAR
           Padding(
             padding: const EdgeInsets.all(16),
             child: Container(
@@ -134,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          // 🏷️ CATEGORY PILLS (UI ONLY FOR NOW)
+          // 🏷️ CATEGORY PILLS
           SizedBox(
             height: 42,
             child: ListView.separated(
@@ -182,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           const SizedBox(height: 16),
 
-          // 🛍️ PRODUCTS GRID (AUTO FILTERED)
+          // 🛍️ PRODUCTS GRID
           Expanded(
             child: products.isEmpty
                 ? const Center(child: Text("No products found"))
@@ -202,7 +261,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          // 🔽 LOAD MORE
+          // 🔽 REVEAL MORE BUTTON
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
             child: SizedBox(

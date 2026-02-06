@@ -6,17 +6,20 @@ import 'providers/product_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/checkout_provider.dart';
 import 'providers/order_provider.dart';
+
 import 'screens/home_screen.dart';
+import 'screens/auth/phone_login_screen.dart';
+import 'utils/auth_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
 
-  // ✅ OPEN REQUIRED BOXES ONLY
   await Hive.openBox('cartBox');
   await Hive.openBox('addressBox');
   await Hive.openBox('orderBox');
+  await Hive.openBox('authBox'); // ✅ IMPORTANT
 
   runApp(const ShopNext());
 }
@@ -39,13 +42,15 @@ class ShopNext extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'ShopNext',
         theme: ThemeData(
-          primaryColor: Colors.deepPurple,
+          primaryColor: const Color(0xFF2874F0),
           appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.deepPurple,
+            backgroundColor: Color(0xFF2874F0),
             foregroundColor: Colors.white,
           ),
         ),
-        home: const HomeScreen(), // ✅ DIRECT HOME
+        home: AuthHelper.isLoggedIn()
+            ? const HomeScreen()
+            : const PhoneLoginScreen(), // 🔥 FLIPKART LOGIC
       ),
     );
   }
