@@ -6,6 +6,7 @@ import 'providers/product_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/checkout_provider.dart';
 import 'providers/order_provider.dart';
+import 'providers/payment_provider.dart';
 
 import 'screens/home_screen.dart';
 import 'screens/auth/phone_login_screen.dart';
@@ -19,7 +20,8 @@ void main() async {
   await Hive.openBox('cartBox');
   await Hive.openBox('addressBox');
   await Hive.openBox('orderBox');
-  await Hive.openBox('authBox'); // ✅ IMPORTANT
+  await Hive.openBox('authBox');
+  await Hive.openBox('paymentBox'); // ✅ NEW
 
   runApp(const ShopNext());
 }
@@ -33,10 +35,9 @@ class ShopNext extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ProductProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()..loadCart()),
-        ChangeNotifierProvider(
-            create: (_) => CheckoutProvider()..loadAddress()),
-        ChangeNotifierProvider(
-            create: (_) => OrderProvider()..loadOrders()),
+        ChangeNotifierProvider(create: (_) => CheckoutProvider()..loadAddress()),
+        ChangeNotifierProvider(create: (_) => OrderProvider()..loadOrders()),
+        ChangeNotifierProvider(create: (_) => PaymentProvider()), // ✅ NEW
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -50,7 +51,7 @@ class ShopNext extends StatelessWidget {
         ),
         home: AuthHelper.isLoggedIn()
             ? const HomeScreen()
-            : const PhoneLoginScreen(), // 🔥 FLIPKART LOGIC
+            : const PhoneLoginScreen(),
       ),
     );
   }

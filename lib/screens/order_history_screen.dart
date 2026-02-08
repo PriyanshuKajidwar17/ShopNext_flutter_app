@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/order_provider.dart';
 import 'order_detail_screen.dart';
+import 'payment_history_screen.dart';
 
 class OrderHistoryScreen extends StatelessWidget {
   const OrderHistoryScreen({super.key});
@@ -12,14 +13,30 @@ class OrderHistoryScreen extends StatelessWidget {
     final orders = context.watch<OrderProvider>().orders;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("My Orders"),
+      appBar: AppBar(
+        title: const Text("My Orders"),
         backgroundColor: const Color(0xFF6A3CBC),
         elevation: 0,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(15),
           ),
-        ),),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.payment),
+            tooltip: "Payment History",
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const PaymentHistoryScreen(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: orders.isEmpty
           ? const Center(child: Text("No orders yet"))
           : ListView.builder(
@@ -48,8 +65,7 @@ class OrderHistoryScreen extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: Column(
-                  crossAxisAlignment:
-                  CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Order #${order.id}",
