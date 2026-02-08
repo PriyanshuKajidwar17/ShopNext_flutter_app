@@ -36,7 +36,8 @@ dependencies:
   confetti: ^0.7.0 # for animation
   hive: ^2.2.3 # **Hive is a fast, lightweight local database in Flutter used to store app data offline without using SQL.
   hive_flutter: ^1.1.0
-
+  geolocator: ^11.0.0 # for enable live location in address_form_sheet
+  geocoding: ^3.0.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
