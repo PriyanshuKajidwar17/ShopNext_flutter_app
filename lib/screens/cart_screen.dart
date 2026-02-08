@@ -14,7 +14,16 @@ class CartScreen extends StatelessWidget {
     final cart = context.watch<CartProvider>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("My Cart")),
+
+      appBar: AppBar(title: const Text("My Cart"),
+          backgroundColor: const Color(0xFF6A3CBC),
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(15),
+          ),
+        ),
+      ),
       body: cart.items.isEmpty
           ? const Center(child: Text("Your cart is empty"))
           : Column(

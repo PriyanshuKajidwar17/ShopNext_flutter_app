@@ -45,10 +45,12 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF2874F0),
-      body: Column(
+     // backgroundColor: const Color(0xFF2874F0),
+      backgroundColor: const Color(0xFF6A3CBC),
+
+        body: Column(
         children: [
-          const SizedBox(height: 60),
+          const SizedBox(height: 40),
 
           /// 🔝 TOP BAR (ICON + APP NAME + SKIP)
           Padding(

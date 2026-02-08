@@ -12,7 +12,14 @@ class OrderHistoryScreen extends StatelessWidget {
     final orders = context.watch<OrderProvider>().orders;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("My Orders")),
+      appBar: AppBar(title: const Text("My Orders"),
+        backgroundColor: const Color(0xFF6A3CBC),
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(15),
+          ),
+        ),),
       body: orders.isEmpty
           ? const Center(child: Text("No orders yet"))
           : ListView.builder(

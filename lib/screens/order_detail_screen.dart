@@ -11,6 +11,13 @@ class OrderDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Order #${order.id}"),
+        backgroundColor: const Color(0xFF6A3CBC),
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(15),
+          ),
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),

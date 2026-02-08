@@ -13,7 +13,14 @@ class AddressConfirmScreen extends StatelessWidget {
     final checkout = context.watch<CheckoutProvider>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Confirm Address")),
+      appBar: AppBar(title: const Text("Confirm Address"),
+        backgroundColor: const Color(0xFF6A3CBC),
+      elevation: 0,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(15),
+        ),
+      ),),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

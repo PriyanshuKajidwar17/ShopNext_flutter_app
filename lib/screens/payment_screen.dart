@@ -21,7 +21,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
     final checkout = context.watch<CheckoutProvider>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Payment")),
+      appBar: AppBar(title: const Text("Payment"),
+          backgroundColor: const Color(0xFF6A3CBC),
+      elevation: 0,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(15),
+        ),
+      ),),
       body: Column(
         children: [
           Card(
