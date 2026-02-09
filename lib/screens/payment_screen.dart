@@ -75,7 +75,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
               padding: const EdgeInsets.all(16),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
+                  //backgroundColor: Colors.green,
+                  backgroundColor: const Color(0xFF8B5CF6), // 🔹 light purple
+                  foregroundColor: Colors.white,
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: () => _confirmPayment(context),

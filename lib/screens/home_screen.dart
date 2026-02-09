@@ -29,6 +29,9 @@ class _HomeScreenState extends State<HomeScreen>
   late AnimationController _bikeController;
   late Animation<double> _bikeAnimation;
 
+  // 🔴 CHANGED: ScrollController for infinite scroll
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -47,11 +50,26 @@ class _HomeScreenState extends State<HomeScreen>
         curve: Curves.easeInOut,
       ),
     );
+
+    // 🔴 CHANGED: Listen when user reaches end of list
+    _scrollController.addListener(() {
+      final provider = context.read<ProductProvider>();
+
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200 &&
+          !provider.isLoading) {
+        provider.loadMore();
+      }
+    });
   }
 
   @override
   void dispose() {
     _bikeController.dispose();
+
+    // 🔴 CHANGED: Dispose controller
+    _scrollController.dispose();
+
     super.dispose();
   }
 
@@ -73,8 +91,6 @@ class _HomeScreenState extends State<HomeScreen>
             bottom: Radius.circular(15),
           ),
         ),
-
-        /// 🟣 FIXED TEXT + MOVING BIKE ICON
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -87,8 +103,6 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ),
             const SizedBox(width: 6),
-
-            /// 🚴 ONLY THIS MOVES
             AnimatedBuilder(
               animation: _bikeAnimation,
               builder: (context, child) {
@@ -99,23 +113,16 @@ class _HomeScreenState extends State<HomeScreen>
               },
               child: Row(
                 children: const [
-                  Icon(
-                    Icons.directions_bike,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+                  Icon(Icons.directions_bike,
+                      color: Colors.white, size: 20),
                   SizedBox(width: 3),
-                  Icon(
-                    Icons.shopping_bag,
-                    color: Colors.white,
-                    size: 14,
-                  ),
+                  Icon(Icons.shopping_bag,
+                      color: Colors.white, size: 14),
                 ],
               ),
             ),
           ],
         ),
-
         actions: [
           IconButton(
             icon: const Icon(Icons.receipt_long, color: Colors.white),
@@ -131,7 +138,8 @@ class _HomeScreenState extends State<HomeScreen>
           Stack(
             children: [
               IconButton(
-                icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                icon:
+                const Icon(Icons.shopping_cart, color: Colors.white),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -211,7 +219,8 @@ class _HomeScreenState extends State<HomeScreen>
                         .setCategory(categories[index]);
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                       color: isSelected
                           ? const Color(0xFF6A3CBC)
@@ -229,8 +238,9 @@ class _HomeScreenState extends State<HomeScreen>
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
-                        color:
-                        isSelected ? Colors.white : Colors.black,
+                        color: isSelected
+                            ? Colors.white
+                            : Colors.black,
                       ),
                     ),
                   ),
@@ -241,11 +251,10 @@ class _HomeScreenState extends State<HomeScreen>
 
           const SizedBox(height: 16),
 
-          // 🛍️ PRODUCTS GRID
+          // 🛍️ PRODUCTS GRID (INFINITE SCROLL)
           Expanded(
-            child: products.isEmpty
-                ? const Center(child: Text("No products found"))
-                : GridView.builder(
+            child: GridView.builder(
+              controller: _scrollController, //
               padding: const EdgeInsets.symmetric(horizontal: 16),
               gridDelegate:
               const SliverGridDelegateWithFixedCrossAxisCount(
@@ -254,40 +263,16 @@ class _HomeScreenState extends State<HomeScreen>
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
               ),
-              itemCount: products.length,
+              itemCount: products.length +
+                  (productProvider.isLoading ? 2 : 0),
               itemBuilder: (context, index) {
+                if (index >= products.length) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
                 return ProductCard(product: products[index]);
               },
-            ),
-          ),
-
-          // 🔽 REVEAL MORE BUTTON
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-            child: SizedBox(
-              height: 46,
-              width: double.infinity,
-              child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.grey.shade400),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                onPressed: productProvider.isLoading
-                    ? null
-                    : () => productProvider.loadMore(),
-                child: Text(
-                  productProvider.isLoading
-                      ? "Loading…"
-                      : "Reveal More",
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
             ),
           ),
         ],

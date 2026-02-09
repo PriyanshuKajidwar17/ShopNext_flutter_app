@@ -13,6 +13,7 @@ class PaymentHistoryScreen extends StatelessWidget {
       appBar: AppBar(title: const Text("Payment History"),
         backgroundColor: const Color(0xFF6A3CBC),
         elevation: 0,
+
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(15),

@@ -115,7 +115,11 @@ class CartScreen extends StatelessWidget {
 
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber,
+                    // 🔴 CHANGED: Background color matched with  button
+                    backgroundColor: const Color(0xFF8B5CF6), // 🔹 light purple
+                    // backgroundColor: Colors.amber,
+                    // 🔴 CHANGED: Force enabled text/icon color
+                    foregroundColor: Colors.white,
                     minimumSize:
                     const Size(double.infinity, 48),
                   ),

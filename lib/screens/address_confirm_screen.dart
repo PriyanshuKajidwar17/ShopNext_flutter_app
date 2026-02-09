@@ -58,7 +58,11 @@ class AddressConfirmScreen extends StatelessWidget {
 
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.amber,
+                // 🔴 CHANGED: Background color matched with Confirm Address button
+               // backgroundColor: const Color(0xFF4CAF50),
+               // backgroundColor: Colors.amber,
+                backgroundColor: const Color(0xFF8B5CF6), // 🔹 light purple
+                foregroundColor: Colors.white,
                 minimumSize: const Size(double.infinity, 50),
               ),
               onPressed: () {

@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:flutter/services.dart';
+// 🔴 CHANGED: Needed for inputFormatters (mobile number restriction)
+
 import '../providers/checkout_provider.dart';
 
 class AddressFormSheet extends StatefulWidget {
@@ -35,8 +38,10 @@ class _AddressFormSheetState extends State<AddressFormSheet>
     super.initState();
     generateCaptcha();
 
-    _animController =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 450),
+    );
     _scaleAnim =
         CurvedAnimation(parent: _animController, curve: Curves.elasticOut);
   }
@@ -80,8 +85,11 @@ class _AddressFormSheetState extends State<AddressFormSheet>
               color: Colors.white,
               borderRadius: BorderRadius.circular(18),
             ),
-            child:
-            const Icon(Icons.check_circle, color: Colors.green, size: 76),
+            child: const Icon(
+              Icons.check_circle,
+              color: Colors.green,
+              size: 76,
+            ),
           ),
         ),
       ),
@@ -115,7 +123,6 @@ class _AddressFormSheetState extends State<AddressFormSheet>
         child: SingleChildScrollView(
           child: Column(
             children: [
-
               /// HEADER
               Container(
                 padding:
@@ -131,8 +138,8 @@ class _AddressFormSheetState extends State<AddressFormSheet>
                     SizedBox(width: 8),
                     Text(
                       "Add Delivery Address",
-                      style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
@@ -140,20 +147,34 @@ class _AddressFormSheetState extends State<AddressFormSheet>
 
               const SizedBox(height: 10),
 
-              _field("Full Name", Icons.person,
-                  controller: nameController,
-                  validator: (v) =>
-                  RegExp(r'^[a-zA-Z ]{2,}$').hasMatch(v!)
-                      ? null
-                      : "Enter valid name"),
+              _field(
+                "Full Name",
+                Icons.person,
+                controller: nameController,
+                validator: (v) =>
+                RegExp(r'^[a-zA-Z ]{2,}$').hasMatch(v!)
+                    ? null
+                    : "Enter valid name",
+              ),
 
-              _field("Mobile", Icons.phone,
-                  controller: mobileController,
-                  keyboard: TextInputType.phone,
-                  validator: (v) =>
-                  RegExp(r'^[6-9]\d{9}$').hasMatch(v!)
-                      ? null
-                      : "Invalid mobile"),
+              _field(
+                "Mobile",
+                Icons.phone,
+                controller: mobileController,
+                keyboard: TextInputType.phone,
+
+                // CHANGED: Only digits & max 10 digits
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(10),
+                ],
+
+                // CHANGED: Indian mobile number (starts with 6–9)
+                validator: (v) =>
+                RegExp(r'^[6-9][0-9]{9}$').hasMatch(v!)
+                    ? null
+                    : "Enter valid Indian mobile number",
+              ),
 
               _field("House / Flat", Icons.home,
                   controller: houseController),
@@ -192,8 +213,8 @@ class _AddressFormSheetState extends State<AddressFormSheet>
                 style: OutlinedButton.styleFrom(
                   foregroundColor: const Color(0xFF6A3CBC),
                   side: const BorderSide(color: Color(0xFF6A3CBC)),
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: 10),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(22)),
                 ),
@@ -223,8 +244,9 @@ class _AddressFormSheetState extends State<AddressFormSheet>
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none),
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                       validator: (v) =>
                       v == (a + b).toString()
@@ -237,7 +259,7 @@ class _AddressFormSheetState extends State<AddressFormSheet>
 
               const SizedBox(height: 14),
 
-              /// SAVE BUTTON (FIXED)
+              /// SAVE BUTTON
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF6A3CBC),
@@ -268,8 +290,8 @@ class _AddressFormSheetState extends State<AddressFormSheet>
                 },
                 child: const Text(
                   "Save Address",
-                  style:
-                  TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -286,27 +308,34 @@ class _AddressFormSheetState extends State<AddressFormSheet>
         TextInputType keyboard = TextInputType.text,
         String? Function(String?)? validator,
         bool required = true,
+
+        //  CHANGED: Added to support mobile formatter
+        List<TextInputFormatter>? inputFormatters,
       }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: TextFormField(
         controller: controller,
         keyboardType: keyboard,
+
+        //CHANGED: Applied only when provided
+        inputFormatters: inputFormatters,
+
         style: const TextStyle(fontSize: 14),
         decoration: InputDecoration(
-          prefixIcon: Icon(icon,
-              color: const Color(0xFF6A3CBC), size: 20),
+          prefixIcon:
+          Icon(icon, color: const Color(0xFF6A3CBC), size: 20),
           labelText: label,
           filled: true,
           fillColor: Colors.white,
           isDense: true,
           border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
         ),
-        validator: required
-            ? validator ?? (v) => v!.isEmpty ? "Required" : null
-            : null,
+        validator:
+        required ? validator ?? (v) => v!.isEmpty ? "Required" : null : null,
       ),
     );
   }
