@@ -39,8 +39,14 @@ class PaymentModel {
 class PaymentProvider with ChangeNotifier {
   final Box _paymentBox = Hive.box('paymentBox');
 
-  List<Map<String, dynamic>> get payments =>
-      _paymentBox.values.cast<Map<String, dynamic>>().toList().reversed.toList();
+  /// ✅ FIXED: Proper Map conversion (NO runtime crash)
+  List<Map<String, dynamic>> get payments {
+    return _paymentBox.values
+        .map((e) => Map<String, dynamic>.from(e as Map))
+        .toList()
+        .reversed
+        .toList();
+  }
 
   void addPayment(PaymentModel payment) {
     _paymentBox.add(payment.toMap());

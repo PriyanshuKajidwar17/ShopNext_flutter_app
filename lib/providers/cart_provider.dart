@@ -15,7 +15,7 @@ class CartProvider extends ChangeNotifier {
 
   final _box = Hive.box('cartBox');
 
-  // ✅ LOAD CART FROM HIVE
+  //  LOAD CART FROM HIVE
   void loadCart() {
     final data = _box.get('items');
     if (data != null) {
@@ -30,7 +30,7 @@ class CartProvider extends ChangeNotifier {
               description: '',
               rating: 0,
               images: List<String>.from(e['images']),
-              category: e['category'], // ✅ FIX
+              category: e['category'], // S FIX
             ),
             quantity: e['quantity'],
           ),
@@ -40,7 +40,7 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ✅ SAVE CART TO HIVE
+  //  SAVE CART TO HIVE
   void _saveCart() {
     _box.put(
       'items',
@@ -50,14 +50,14 @@ class CartProvider extends ChangeNotifier {
           'title': e.product.title,
           'price': e.product.price,
           'images': e.product.images,
-          'category': e.product.category, // ✅ SAVE CATEGORY
+          'category': e.product.category, //  SAVE CATEGORY
           'quantity': e.quantity,
         };
       }).toList(),
     );
   }
 
-  // ➕ ADD TO CART
+  // ADD TO CART
   void addToCart(Product product) {
     final index =
     _items.indexWhere((item) => item.product.id == product.id);
@@ -95,11 +95,11 @@ class CartProvider extends ChangeNotifier {
         _items.removeAt(index);
       }
       _saveCart();
-      notifyListeners();
+      notifyListeners(); // provide using statemanagment
     }
   }
 
-  // 🧹 CLEAR CART
+  // CLEAR CART
   void clearCart() {
     _items.clear();
     _box.delete('items');

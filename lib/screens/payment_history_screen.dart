@@ -10,21 +10,23 @@ class PaymentHistoryScreen extends StatelessWidget {
     final payments = context.watch<PaymentProvider>().payments;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Payment History"),
+      appBar: AppBar(
+        title: const Text("Payment History"),
         backgroundColor: const Color(0xFF6A3CBC),
         elevation: 0,
-
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(15),
           ),
-        ),),
+        ),
+      ),
       body: payments.isEmpty
           ? const Center(child: Text("No payments yet"))
           : ListView.builder(
         itemCount: payments.length,
         itemBuilder: (context, index) {
-          final p = payments[index]; // Map<String, dynamic>
+          final Map<String, dynamic> p =
+          Map<String, dynamic>.from(payments[index]);
 
           return Card(
             margin: const EdgeInsets.all(10),
